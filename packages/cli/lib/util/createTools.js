@@ -20,7 +20,28 @@ function getPromptModules() {
             cli.injectPrompt(createSuportMonorepo())
         
             cli.onPromptComplete((answers, options) => {
-                console.log(answers, '--webpack')
+                // -- 表示回答内容收集
+                if (answers.preset) {
+                    options.preset = answers.preset
+                }
+                if (answers.features) {
+                    options.features = answers.features
+                }
+                if (answers.createPurpose) {
+                    options.createPurpose = answers.createPurpose
+                }
+                if (answers.typeScript) {
+                    options.typeScript = answers.typeScript
+                }
+                if (answers.suportMonorepoLerna) {
+                    options.suportMonorepoLerna = answers.suportMonorepoLerna
+                }
+                if (answers.vuePlugins) {
+                    options.vuePlugins = answers.vuePlugins
+                }
+                if (answers.styleHandle) {
+                    options.styleHandle = answers.styleHandle
+                }
             })
         }
     })

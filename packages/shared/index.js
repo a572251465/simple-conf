@@ -1,6 +1,9 @@
-const {printLog, isPackageInsall} = require('./src/index')
+const {isPackageInsall} = require('./lib/utils')
+const {loadding} = require('./lib/loading')
+const {print} = require('./lib/print')
 
 module.exports = {
-    printLog,
-    isPackageInsall
+    print,
+    isPackageInsall,
+    loadding
 }

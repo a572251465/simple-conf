@@ -1,11 +1,11 @@
 {
-  "name": "@simple-conf/shared",
+  "name": "@simple-conf/cli-conf-generator",
   "version": "0.0.0",
   "description": "> TODO: description",
   "author": "lihh <2495041749@qq.com>",
   "homepage": "https://github.com/a572251465/simple-conf#readme",
   "license": "ISC",
-  "main": "index.js",
+  "main": "lib/cli-conf-generator.js",
   "directories": {
     "lib": "lib",
     "test": "__tests__"

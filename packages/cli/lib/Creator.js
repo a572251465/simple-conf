@@ -2,6 +2,9 @@ const {defaults} = require('./options')
 const isManualMode = answers => answers.preset === '__manual__'
 const PromptModuleAPI = require('./PromptModuleAPI')
 const inquirer = require('inquirer')
+const {print, loadding} = require('@simple-conf/shared')
+const {isDirExists, removeFile} = require('@simple-conf/cli-file-generator')
+const path = require('path')
 
 class Creator {
     constructor(name, contextPath, promptModules) {
@@ -36,8 +39,8 @@ class Creator {
         const presetChoices = Object.entries(presets).map(([name]) => {
             let displayName = name
             const transformTips = {
-                'default': 'Default（webpack generator project）',
-                'default_library': 'Default（webpack generator library）'
+                'default': `Default（${print.yellowBright('Webpack Generator Project', true)}）`,
+                'default_library': `Default（${print.yellowBright('Webpack Generator Library', true)}）`
             }
             displayName = transformTips[name]
             return {
@@ -100,7 +103,58 @@ class Creator {
 
     async create() {
         let answers = await this.promptAndResolvePresets()
-        console.log(answers)
+        // 表示支持依赖
+        let supportPreset = {
+            preset: null,
+            features: null,
+            createPurpose: null,
+            // -- library相关
+            typeScript: null,
+            suportMonorepoLerna: null,
+            // -- project相关
+            vuePlugins: null,
+            styleHandle: null
+        }
+        this.promptComleteCbs.forEach(fn => fn(answers, supportPreset))
+
+        // -- 进行默认选项合并
+        if (supportPreset.preset === 'default') {
+            supportPreset = Object.assign({}, supportPreset, defaults.presets['default'])
+        }
+        if (supportPreset.preset === 'default_library') {
+            supportPreset = Object.assign({}, supportPreset, defaults.presets['default_library'])
+        }
+
+        const dir = path.resolve(this.contextPath, this.name)
+        const status = isDirExists(dir)
+        // -- 后续开始处理
+        const afterHandle = () => {
+
+        }
+        if (!status) {
+            afterHandle()
+            return false
+        }
+        // -- 询问是否删除目录
+        const {action} = await inquirer.prompt([
+            {
+                name: 'action',
+                type: 'list',
+                message: `Target directory ${print.cyan(dir, true)} already exists. Pick an action:`,
+                choices: [
+                    {name: 'Overwrite', value: 'overwrite'},
+                    {name: 'Cancel', value: false}
+                ]
+            }
+        ])
+        if (!action) {
+            return false
+        }
+
+        loadding.start(`the directory ${print.cyan(dir, true)} start overwrite`)
+        await removeFile(dir)
+        loadding.stop()
+        afterHandle()
     }
 }
 

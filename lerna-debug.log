@@ -1,0 +1,21 @@
+0 silly argv {
+0 silly argv   _: [ 'create' ],
+0 silly argv   lernaVersion: '4.0.0',
+0 silly argv   '$0': 'C:\\Users\\86150\\AppData\\Roaming\\npm\\node_modules\\lerna\\cli.js',
+0 silly argv   name: 'cli-conf-generator'
+0 silly argv }
+1 notice cli v4.0.0
+2 verbose rootPath D:\my_project\simple-conf
+3 error Error: canceled
+3 error     at Interface.<anonymous> (C:\Users\86150\AppData\Roaming\npm\node_modules\lerna\node_modules\read\lib\read.js:66:13)
+3 error     at Interface.emit (events.js:400:28)
+3 error     at Interface._ttyWrite (readline.js:910:16)
+3 error     at ReadStream.onkeypress (readline.js:235:10)
+3 error     at ReadStream.emit (events.js:400:28)
+3 error     at emitKeys (internal/readline/utils.js:358:14)
+3 error     at emitKeys.next (<anonymous>)
+3 error     at ReadStream.onData (readline.js:1179:36)
+3 error     at ReadStream.emit (events.js:400:28)
+3 error     at addChunk (internal/streams/readable.js:290:12)
+3 error     at readableAddChunk (internal/streams/readable.js:265:9)
+3 error     at ReadStream.Readable.push (internal/streams/readable.js:204:10)
