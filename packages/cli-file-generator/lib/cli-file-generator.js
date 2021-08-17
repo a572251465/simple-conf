@@ -103,12 +103,8 @@ const removeFile = dir => {
                 reject()
             }
         }
-        let timer = setTimeout(() => {
-            resolve()
-            clearTimeout(timer)
-            timer = null
-        }, 3000);
         run([dir])
+        resolve()
     })
 }
 
