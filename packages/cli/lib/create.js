@@ -13,9 +13,10 @@ module.exports = (...args) => {
  * @param {*} projectName 创建项目的名称
  */
 async function create(projectName) {
+    // -- 当前程序运行目录
     const runDir = process.cwd()
     const targetDir = path.resolve(runDir, projectName)
-    // -- 命令口 询问弹框
+    // -- 命令窗口 询问弹框
     const promptModules = getPromptModules()
     const creator = new Creator(projectName, targetDir, promptModules)
     await creator.create()

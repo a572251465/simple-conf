@@ -7,6 +7,7 @@ class Creator {
     constructor(name, contextPath, promptModules) {
         this.name = name
         this.contextPath = contextPath
+        // -- 解析预设 以及特性
         const {presetPrompt, featurePrompt} = this.resolveIntroPrompts()
         this.presetPrompt = presetPrompt
         this.featurePrompt = featurePrompt
@@ -16,28 +17,40 @@ class Creator {
         promptModules.forEach(m => m(PromptAPI))
     }
 
+    /**
+     * @author lihh
+     * @description 用来获取默认的预设
+     * @returns 返回默认的预设
+     */
     getPresets() {
         return Object.assign({}, defaults.presets)
     }
 
+    /**
+     * @author lihh
+     * @description 解析prompts循环内容
+     * @returns 返回预设 以及对应的特性
+     */
     resolveIntroPrompts() {
         const presets = this.getPresets()
         const presetChoices = Object.entries(presets).map(([name]) => {
             let displayName = name
-            if (name === 'default') {
-                displayName = 'Default'
+            const transformTips = {
+                'default': 'Default（webpack generator project）',
+                'default_library': 'Default（webpack generator library）'
             }
+            displayName = transformTips[name]
             return {
                 name: displayName,
                 value: name
             }
         })
 
-        // -- 设置手动选择档
+        // -- 设置手动选择档 以及默认档合并
         const presetPrompt = {
             name: 'preset',
             type: 'list',
-            message: 'Please a create tool',
+            message: 'Please pick a preset',
             choices: [
                 ...presetChoices,
                 {
@@ -51,9 +64,10 @@ class Creator {
         const featurePrompt = {
             name: 'features',
             when: isManualMode,
-            type: 'checkbox',
+            type: 'list',
             message: 'choose a create project/library tool',
-            choices: []
+            choices: [],
+            pageSize: 3
         }
 
         return {
@@ -85,7 +99,8 @@ class Creator {
     }
 
     async create() {
-        let preset = await this.promptAndResolvePresets()
+        let answers = await this.promptAndResolvePresets()
+        console.log(answers)
     }
 }
 

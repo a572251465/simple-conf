@@ -11,5 +11,9 @@ exports.defaultPreset = {
 }
 
 exports.defaults = {
-    'default': Object.assign({createTool: 'webpack'}, exports.defaultPreset)
+    presets: {
+        // -- 设置默认的预设
+        'default': {},
+        'default_library': {}
+    }
 }
