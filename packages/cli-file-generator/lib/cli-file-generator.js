@@ -1,6 +1,7 @@
 const fs = require('fs')
 const path = require('path')
 const {print} = require('@simple-conf/shared')
+const fileSuffix = ['.json', '.js', '.ts', '.tsx', '.html', '.scss', '.less', '.css', '.jsx', '.vue']
 
 /**
  * @author lihh
@@ -39,33 +40,76 @@ const isDirExists = dirPath => {
 
 /**
  * @author lihh
- * @description 生成文件
- * @param {*} structure 数组 || 字符串 || 对象
+ * @description 进行路径地址格式化
+ * @param {*} paths 传递的path路径
  */
-const generatorFile = structure => {
-    // -- 如果是字符串 进行处理
-    const strHandle = () => {
+const pathFormat = paths => {
+    if (!paths  || typeof paths === 'object') return paths
+    if (typeof paths === 'string') {
+        paths = paths.split(path.sep)
+    }
+    paths = Object.assign([], paths)
+    const result = {value: '', children: []}
+    let currentNode = result
 
+    while(paths.length > 0) {
+        const surplus = paths.shift()
+        currentNode.value = surplus
+        const workspaces = {value: '', children: []}
+        if (paths.length > 0) {
+            currentNode.children.push(workspaces)
+            currentNode = workspaces
+        }
     }
-    // -- 如果是数组 进行处理
-    const arrayHandle = () => {
+    return result
+}
 
-    }
-    // -- 如果是对象 进行处理
-    const objectHandle = () => {
+/**
+ * @author lihh
+ * @description 生成文件 为了生成目录
+ * @param {*} paths 数组 || 字符串 || 对象
+ */
+const generatordir = paths => {
+    try {
+        paths = path.normalize(paths)
 
-    }
-    if (!structure) {
-        return false
-    }
-    if (typeof structure === 'string') {
-        return strHandle(structure)
-    }
-    if (Array.isArray(structure)) {
-        return arrayHandle(structure)
-    }
-    if (typeof structure === 'object') {
-        return objectHandle(structure)
+        // -- 进行数据格式化
+        paths = pathFormat(paths)
+
+        // -- 进行文件生成
+        const createFile = (dirArr, prefixPath = '') => {
+            const {value, children = []} = dirArr
+            const dir = prefixPath ? path.resolve(prefixPath, value) : value
+            const isFile = isFileExists(dir)
+            const isDir = isDirExists(dir)
+
+            // -- 判断是否是文件
+            if (isFile) {
+                return false
+            }
+
+            // -- 判断是否是目录
+            if (isDir) {
+                children.forEach(pathName => {
+                    createFile(pathName, dir)
+                })
+                return false
+            }
+
+            // -- 用来生成文件或是文件夹 包含指定后缀 || 名字中包含点 就认为是文件 不是文件夹
+            const isCreateFile = fileSuffix.some(suffix => value.endsWith(suffix)) || value.includes('.')
+            if (!isCreateFile) {
+                fs.mkdirSync(dir)
+            }
+            if (children.length > 0) {
+                children.forEach(pathName => {
+                    createFile(pathName, dir)
+                })
+            }
+        }
+        createFile(paths)
+    } catch(e) {
+        print.red(e)
     }
 }
 
@@ -112,6 +156,6 @@ const removeFile = dir => {
 module.exports = {
     isFileExists,
     isDirExists,
-    generatorFile,
+    generatordir,
     removeFile
 }

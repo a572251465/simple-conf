@@ -1,4 +1,4 @@
-const {createTools, createPurpose, createSuportTs, createSuportStyle, createSuportVuexOrRouter, createSuportMonorepo} = require('../promptModules/commonTool')
+const {createTools, createPurpose, createSuportTs, createSuportStyle, createSuportVuexOrRouter, createSuportMonorepo, createProjectTool} = require('../promptModules/commonTool')
 
 /**
  * @author lihh
@@ -18,6 +18,8 @@ function getPromptModules() {
             cli.injectPrompt(createSuportStyle())
         
             cli.injectPrompt(createSuportMonorepo())
+
+            cli.injectPrompt(createProjectTool())
         
             cli.onPromptComplete((answers, options) => {
                 // -- 表示回答内容收集
@@ -41,6 +43,9 @@ function getPromptModules() {
                 }
                 if (answers.styleHandle) {
                     options.styleHandle = answers.styleHandle
+                }
+                if (answers.createTool) {
+                    options.createTool = answers.createTool
                 }
             })
         }

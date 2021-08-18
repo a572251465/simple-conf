@@ -1,3 +1,5 @@
+const {print} = require('@simple-conf/shared')
+
 /**
  * @author lihh
  * @description 代码生成工具的提示用语
@@ -130,11 +132,40 @@ const createSuportMonorepo = () => {
     }
 }
 
+/**
+ * @author lihh
+ * @description 创建项目的工具
+ */
+const createProjectTool = () => {
+    return {
+        name: 'createTool',
+        value: 'createTool',
+        type: 'list',
+        message: 'Please select create project/library tool',
+        description: 'Please select create project/library tool',
+        choices: [
+            {
+                name: print.cyan('Use NPM', true),
+                value: 'npm'
+            },
+            {
+                name: print.cyan('Use YARN', true),
+                value: 'yarn'
+            },
+            {
+                name: 'Cancel',
+                value: false
+            }
+        ]
+    }
+}
+
 module.exports = {
     createTools,
     createPurpose,
     createSuportTs,
     createSuportVuexOrRouter,
     createSuportStyle,
-    createSuportMonorepo
+    createSuportMonorepo,
+    createProjectTool
 }

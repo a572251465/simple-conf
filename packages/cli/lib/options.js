@@ -5,13 +5,15 @@ exports.defaults = {
             features: 'webpack',
             createPurpose: 'project',
             vuePlugins: [ 'vuex', 'vue-router', 'typescript' ],
-            styleHandle: 'scss'
+            styleHandle: 'scss',
+            createTool: 'npm'
         },
         'default_library': {
             features: 'webpack',
             createPurpose: 'library',
             typeScript: true,
-            suportMonorepoLerna: true
+            suportMonorepoLerna: true,
+            createTool: 'npm'
         }
     }
 }

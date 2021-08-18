@@ -113,7 +113,9 @@ class Creator {
             suportMonorepoLerna: null,
             // -- project相关
             vuePlugins: null,
-            styleHandle: null
+            styleHandle: null,
+            // -- 创建工具
+            createTool: null
         }
         this.promptComleteCbs.forEach(fn => fn(answers, supportPreset))
 
@@ -123,6 +125,11 @@ class Creator {
         }
         if (supportPreset.preset === 'default_library') {
             supportPreset = Object.assign({}, supportPreset, defaults.presets['default_library'])
+        }
+        // -- 判断是否允许使用工具
+        if (!supportPreset.createTool) {
+            print.red('Please install NPM or YARN')
+            return false
         }
 
         const dir = path.resolve(this.contextPath, this.name)
