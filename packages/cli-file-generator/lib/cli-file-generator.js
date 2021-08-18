@@ -97,6 +97,7 @@ const removeFile = dir => {
     
                     const newDir = dirList.map(filename => path.resolve(name, filename))
                     run(newDir)
+                    fs.rmdirSync(name)
                 })
             } catch (e) {
                 print.red(e)
