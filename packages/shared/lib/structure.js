@@ -8,10 +8,10 @@ const getLibray = (basePath, isLerna = true) => {
     const dirArr = {
         value: basePath,
         children: [
-            {value: 'builds', children: [
+            {value: 'builds'},
+            {value: 'packages', children: [
                 {value: 'theme-chalk'}
             ]},
-            {value: 'packages'},
             {value: 'story'},
             {value: 'typings'},
 

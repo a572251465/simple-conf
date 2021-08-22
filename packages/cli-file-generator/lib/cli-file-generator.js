@@ -154,9 +154,22 @@ const removeFile = dir => {
     })
 }
 
+/**
+ * @author lihh
+ * @description 指定文件写入内容
+ * @param {*} dir 
+ * @param {*} content 
+ */
+const assignPathWriteFile = (dir, content) => {
+    const stream = fs.createWriteStream(dir)
+    stream.write(typeof content === 'string' ? content : JSON.stringify(content, null, 2))
+    stream.close()
+}
+
 module.exports = {
     isFileExists,
     isDirExists,
     generatordir,
-    removeFile
+    removeFile,
+    assignPathWriteFile
 }

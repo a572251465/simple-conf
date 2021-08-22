@@ -1,4 +1,3 @@
-const path = require('path')
 const {print} = require('@simple-conf/shared')
 const {getPromptModules} = require('./util/createTools')
 const Creator = require('./Creator')

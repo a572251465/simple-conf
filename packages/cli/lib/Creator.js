@@ -2,8 +2,9 @@ const {defaults} = require('./options')
 const isManualMode = answers => answers.preset === '__manual__'
 const PromptModuleAPI = require('./PromptModuleAPI')
 const inquirer = require('inquirer')
-const {print, loadding, getProject, getLibray} = require('@simple-conf/shared')
+const {print, loadding, getProject, getLibray, loadingTimeOut} = require('@simple-conf/shared')
 const {isDirExists, removeFile, generatordir} = require('@simple-conf/cli-file-generator')
+const cliDispatch = require('@simple-conf/cli-dispatch')
 const path = require('path')
 
 class Creator {
@@ -123,10 +124,21 @@ class Creator {
 
         // -- 进行默认选项合并
         if (supportPreset.preset === 'default') {
-            supportPreset = Object.assign({}, supportPreset, defaults.presets['default'])
-        }
-        if (supportPreset.preset === 'default_library') {
-            supportPreset = Object.assign({}, supportPreset, {inputLibraryName: this.name}, defaults.presets['default_library'])
+            supportPreset = Object.assign(
+                {},
+                supportPreset,
+                {inputLibraryName: this.name},
+                defaults.presets['default'])
+        } else if (supportPreset.preset === 'default_library') {
+            supportPreset = Object.assign(
+                {},
+                supportPreset,
+                {inputLibraryName: this.name},
+                defaults.presets['default_library'])
+        } else {
+            if (!supportPreset.inputLibraryName) {
+                supportPreset = Object.assign({}, supportPreset, {inputLibraryName: this.name})
+            }
         }
         // -- 判断是否允许使用工具
         if (!supportPreset.createTool) {
@@ -137,16 +149,21 @@ class Creator {
         const dir = path.resolve(this.contextPath, this.name)
         const status = isDirExists(dir)
         // -- 后续开始处理
-        const afterHandle = () => {
+        const afterHandle = async () => {
             const {createPurpose} = supportPreset
 
             const resultConfig = {}
             // -- 1. 开始生成目录结构
             const structure = createPurpose === 'project' ? getProject(dir) : getLibray(dir)
             generatordir(structure)
+            await loadingTimeOut({
+                start: 'new library dir start generator...',
+                end: 'new library dir generator success'
+            })
 
             // -- 2. 执行调度文件 开始执行
-            
+            await cliDispatch.start(dir, supportPreset, resultConfig)
+            loadding.stop()
         }
         if (!status) {
             afterHandle()
@@ -170,7 +187,10 @@ class Creator {
 
         loadding.start(`the directory ${print.cyan(dir, true)} start overwrite`)
         await removeFile(dir)
-        loadding.stop()
+        await loadingTimeOut({
+            start: `the directory ${print.cyan(dir, true)} start overwrite...`,
+            end: 'file merge success'
+        })
         afterHandle()
     }
 }
