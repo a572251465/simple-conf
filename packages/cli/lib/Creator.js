@@ -2,8 +2,8 @@ const {defaults} = require('./options')
 const isManualMode = answers => answers.preset === '__manual__'
 const PromptModuleAPI = require('./PromptModuleAPI')
 const inquirer = require('inquirer')
-const {print, loadding} = require('@simple-conf/shared')
-const {isDirExists, removeFile} = require('@simple-conf/cli-file-generator')
+const {print, loadding, getProject, getLibray} = require('@simple-conf/shared')
+const {isDirExists, removeFile, generatordir} = require('@simple-conf/cli-file-generator')
 const path = require('path')
 
 class Creator {
@@ -115,7 +115,9 @@ class Creator {
             vuePlugins: null,
             styleHandle: null,
             // -- 创建工具
-            createTool: null
+            createTool: null,
+            // -- 组件库名称
+            inputLibraryName: null
         }
         this.promptComleteCbs.forEach(fn => fn(answers, supportPreset))
 
@@ -124,7 +126,7 @@ class Creator {
             supportPreset = Object.assign({}, supportPreset, defaults.presets['default'])
         }
         if (supportPreset.preset === 'default_library') {
-            supportPreset = Object.assign({}, supportPreset, defaults.presets['default_library'])
+            supportPreset = Object.assign({}, supportPreset, {inputLibraryName: this.name}, defaults.presets['default_library'])
         }
         // -- 判断是否允许使用工具
         if (!supportPreset.createTool) {
@@ -136,7 +138,15 @@ class Creator {
         const status = isDirExists(dir)
         // -- 后续开始处理
         const afterHandle = () => {
+            const {createPurpose} = supportPreset
 
+            const resultConfig = {}
+            // -- 1. 开始生成目录结构
+            const structure = createPurpose === 'project' ? getProject(dir) : getLibray(dir)
+            generatordir(structure)
+
+            // -- 2. 执行调度文件 开始执行
+            
         }
         if (!status) {
             afterHandle()

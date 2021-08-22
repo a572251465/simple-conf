@@ -1,5 +1,3 @@
-const {print} = require('@simple-conf/shared')
-
 /**
  * @author lihh
  * @description 代码生成工具的提示用语
@@ -145,11 +143,11 @@ const createProjectTool = () => {
         description: 'Please select create project/library tool',
         choices: [
             {
-                name: print.cyan('Use NPM', true),
+                name: 'Use NPM',
                 value: 'npm'
             },
             {
-                name: print.cyan('Use YARN', true),
+                name: 'Use YARN',
                 value: 'yarn'
             },
             {
@@ -160,6 +158,21 @@ const createProjectTool = () => {
     }
 }
 
+/**
+ * @author lihh
+ * @description 输入库名称
+ */
+const inputLibraryName = () => {
+    return {
+        name: 'libraryName',
+        value: 'libraryName',
+        type: 'input',
+        message: 'Please input library name: ',
+        description: 'Please input library name: ',
+        when: answers => answers.createPurpose.includes('library')
+    }
+}
+
 module.exports = {
     createTools,
     createPurpose,
@@ -167,5 +180,6 @@ module.exports = {
     createSuportVuexOrRouter,
     createSuportStyle,
     createSuportMonorepo,
-    createProjectTool
+    createProjectTool,
+    inputLibraryName
 }

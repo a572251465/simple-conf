@@ -71,10 +71,11 @@ const pathFormat = paths => {
  */
 const generatordir = paths => {
     try {
-        paths = path.normalize(paths)
-
-        // -- 进行数据格式化
-        paths = pathFormat(paths)
+        if (paths && typeof paths !== 'object') {
+            paths = path.normalize(paths)
+            // -- 进行数据格式化
+            paths = pathFormat(paths)
+        }
 
         // -- 进行文件生成
         const createFile = (dirArr, prefixPath = '') => {
